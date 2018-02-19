@@ -26,9 +26,8 @@ def  E_step_get_Z(pwm, Z, sequences):
             for k in motif_range:
                 Z[i,j] += pwm[CHAR_MP[seq[k]],k-j+1]
     log_prob = sum(np.apply_along_axis(logsumexp,axis=1,arr=Z))
-    z_nrm = np.exp(np.apply_along_axis(logsumexp,axis=1,arr=np.log(Z)))
-    Z = np.exp(Z) / np.exp
-    Z /= Z.sum(axis=1)[:, np.newaxis]
+    z_nrm = np.exp(np.apply_along_axis(logsumexp,axis=1,arr=Z))
+    Z = np.exp(Z) / z_nrm[:, np.newaxis]
     return (Z, log_prob)
                 
 def M_step_get_pwm(pwm, Z,sequences):
@@ -43,6 +42,7 @@ def M_step_get_pwm(pwm, Z,sequences):
             for k in motif_range:
                 pwm[CHAR_MP[seq[k]],k-j+1] += Z[i,j]
     pwm /= pwm.sum(axis=0)
+    return pwm
 
 
 def load_sequences(f):
@@ -75,17 +75,37 @@ def get_init_motif(sequences):
     for motif in get_all_kmers(sequences,W):
         pwm = get_pwm_from_motif(motif)
         Z, prob = E_step_get_Z(pwm, Z, sequences)
+        #pwm = M_step_get_pwm(pwm, Z,sequences)
+        #Z, prob = E_step_get_Z(pwm, Z, sequences)
         if prob > best_prob:
-            pwm = M_step_get_pwm(pwm, Z,sequences)
+            best_pwm = M_step_get_pwm(pwm, Z,sequences)
             best_prob = prob
-            print(best_prob)
+            #print(best_prob, best_pwm)
             best_Z = Z
     Z = best_Z
+    pwm = best_pwm
     return (pwm, Z)  
 
 def write_output(pwm,Z,sequences,args):
     global CHAR_MP, L, n, W
-    pass
+    subseq_file_path = args.SUBSEQ
+
+    with open(args.M,'w') as  model_file_path: 
+        ''' A	0.227	0.049	0.831	0.844	0.231	0.028	0.209 '''
+        model = []
+        for  (ch, pwm_i) in zip('ACGT',pwm):
+            model.append("{}\t".format(ch) +  
+                    "\t".join(map("{:.3f}".format, pwm_i)) + '\t\n')
+        model_file_path.writelines(model)
+
+    pos_max = np.argmax(Z, axis=1)
+
+    with open(args.P, 'w') as position_file_path:
+        position_file_path.write('\n'.join([str(el) for el in pos_max]))
+
+    with open(args.SUBSEQ,'w') as subseq_file_path:
+        for p,seq in zip(pos_max, sequences):
+            subseq_file_path.write(seq[p:p+W]+'\n')
 
 
 def main(args):
@@ -95,21 +115,16 @@ def main(args):
     sequences = load_sequences(args.SEQ)
     (pwm, Z) = get_init_motif(sequences)
 
-    print(pwm, Z)
-    
     pwm_old = pwm
     converged = False
     while not converged:
-        pwm = get_pwm_from_motif(Z, sequences)
-        Z = E_step_get_Z(pwm, sequences)
-        converged = np.linalg.norm(pwm-pwm_old) < 1e-10
+        Z, prob = E_step_get_Z(pwm, Z, sequences)
+        pwm = M_step_get_pwm(pwm, Z,sequences)
+        converged = np.linalg.norm(pwm-pwm_old) < 1e-8
+        #print ( np.linalg.norm(pwm-pwm_old))
         pwm_old = pwm
 
     write_output(pwm, Z, sequences, args)
-    model_file_path = args.M
-    position_file_path = args.P
-    subseq_file_path = args.SUBSEQ
-
 
 # Note: this syntax checks if the Python file is being run as the main program
 # and will not execute if the module is imported into a different module
