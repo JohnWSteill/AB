@@ -9,11 +9,7 @@ L = 0
 n = 0
 W = 0
 
-
-# You can choose to write classes in other python files
-# and import them here.
-
-def  E_step_get_Z(pwm, Z, sequences):
+def E_step_get_Z(pwm, Z, sequences):
     global CHAR_MP, L, n, W
     pwm = np.log(pwm)
     for i,seq in enumerate(sequences):
