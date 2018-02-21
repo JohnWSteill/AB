@@ -8,7 +8,7 @@
 \usepackage{tikz}
 \usepackage[plain]{algorithm}
 \usepackage{algpseudocode}
-
+\usepackage{graphicx}
 \usetikzlibrary{automata,positioning}
 
 %
@@ -143,26 +143,147 @@
 \pagebreak
 
 \begin{homeworkProblem}
-Part 1: MEME Implementation: Write a program, learn\_motif.py, that takes as input a set of DNA
+\textbf{MEME Implementation}
+
+ Write a program, learn\_motif.py, that takes as input a set of DNA
 sequences and an integer width W and learns an OOPS model for a motif of width W.
 
   \begin{algorithm}[]
         \begin{algorithmic}[1]
             \Function{OOPS\_exhausive}{$input\_seqs, W, \pi_{init}$}
-            	\State{} $seq\_to\_pwm\_hash \gets \Call{init\_seq\_to\_pwm}{W, \pi_{init}}$
-                \If{$start \geq end$}
-                    \State{} \Return{}
-                \EndIf{}
-                \State{} $mid \gets \Call{Partition}{list, start, end}$
-                \State{} \Call{Quick-Sort}{$list, start, mid - 1$}
-                \State{} \Call{Quick-Sort}{$list, mid + 1, end$}
+            	\State $bestProb = -\infty$
+		\For{W-mers in input\_seqs} 
+			\State $pwm \gets get\_init\_motif(sequences)$
+			\State $Z,prob \gets E\_step\_get\_Z(pwm, sequences)$
+			\If {$ prob > bestProb$}
+				\State $best\_prob = prob$
+				\State $best\_pwm = M\_step\_get\_pwm(Z,sequences)$
+			\EndIf
+			\State $pwm=best\_pwm $
+	         \EndFor
+	         \While {not Converged}
+	         	\State $Z  \gets E\_step\_get\_Z(pwm, sequences)$
+			\State $pwm_p = M\_step\_get\_pwm(Z,sequences)$
+			\State $Converged = |pwm_p-pwm| <  tol$ 
+	         \EndWhile
+            	\State{Write $pwm, Z_{i,max}, ...$} 
             \EndFunction{}
         \end{algorithmic}
-        \caption{Start of QuickSort}
+        \caption{Exhaustive Start OOPS Algorithm}
     \end{algorithm}
 \end{homeworkProblem}
 
 \begin{homeworkProblem}
+\textbf{Motif Discovery}
+
+We suppose the input sequences in the file hw1\_hidden.txt come from the promoter regions of 100 yeast genes that
+are differentially expressed in a stress response experiment. We would like to use motif finding to learn more about a candidate regulator (transcription
+factor) of this expression response. Using our program from part I, we find the best OOPS motif of width 8:
+
+\begin{center}
+ \begin{tabular}{|| c | c c c c c c c c c ||} 
+
+ \hline
+ ch & BG & Pos1 & Pos2 & Pos3 & Pos4 & Pos5 & Pos6 & Pos7 & Pos8 \\ [0.5ex] 
+  \hline 
+  C & 0.256 & 0.010 &  0.094 & 0.019 & 0.010 & 0.010 & 0.019 &  0.595 & 0.797 \\ 
+ A & 0.241 & 0.240 & 0.010 & 0.022 & 0.970 & 0.856 & 0.020 & 0.251 & 0.010 \\
+ G & 0.250 & 0.029 & 0.886 & 0.948 & 0.011 & 0.020 & 0.922 &  0.020 & 0.020 \\
+ T & 0.252	& 0.721 &	0.010 & 0.011 & 0.010 & 0.114 & 0.040 &	0.135 & 0.174 \\ [1ex] 
+\hline
+\end{tabular} 
+\\[1.5ex]
+Hidden Motif PWM
+\end{center}
+
+\end{homeworkProblem}
+
+\pagebreak
+
+\begin{homeworkProblem}
+\textbf{Sequence Logo}
+
+    Express the PWM as a sequence Logo.
+    
+   \includegraphics[width=6in]{logo.pdf} 
+   
+\end{homeworkProblem}   
+
+\begin{homeworkProblem}
+\textbf{Transcription Factor Search}
+
+   To find a candidate match for our transcription factor, we go to JASPAR, "an open-access database of curated, non-redundant transcription factor (TF) binding profiles."
+   
+   By following the instructions on the alignment page, we see that the top hit, MA0304.1 (GCR1) is a very close match:
+   
+   \includegraphics[width=4in]{MA0304_1.png} 
+   
+   Others in the top 5 include MA0377.1 (SFL1),  MA0305.1 (GCR2), MA0323.1 (IXR1), and MA0418.1 (YAP6), but they aren't nearly as close. The maximum possible score is 
+   two times the length of the two sequences, and the top hit was over 15, compared with 13 for second place. 
+   
+   There are slight differences. As the Jaspar description is "Finalized", it doesn't need to use pseudo counts, and thus the informational content is marginally higher at every location.
+   
+   Using the www.yeastgenome.org website, we find GCR1 is a "transcriptional activator of genes involved in glycolysis." From Wikipedia, glycolysis is the metabolic pathway that breaks down glucose into pyruvate, releasing the free energy needed to create the universal fuel ATP. GCR1 is known to regulate 86 genes. 
+  
+\end{homeworkProblem}   
+
+\begin{homeworkProblem}
+\textbf{ PWM Parameters}
+
+   
+    We are given the following motif solution, using no pseudocounts:
+    
+\begin{center}
+\begin{tabular} {| c |}
+ \hline
+ C\underline{\textbf{ATGT}}GAA \\
+CAG\underline{\textbf{CAGG}}G \\
+A\underline{\textbf{CCTC}}TTC \\
+\underline{\textbf{CAGA}}CATG \\
+AC\underline{\textbf{CTAT}}CG \\
+G\underline{\textbf{CGGC}}AGT \\
+\underline{\textbf{GTGT}}AGTT \\
+C\underline{\textbf{CAGG}}AAG \\
+AT\underline{\textbf{GACC}}GG \\
+GGA\underline{\textbf{TAGT}}A \\
+  \hline
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{ | c | c c c c | c |}
+\hline
+& i=1 & i=2 & i=3 & i=4 & Background \\
+\hline
+A & 0.1 &  0.5  & 0.1  & 0.1  & 0.325 \\
+C & 0.6  & 0.1 &  0.1  & 0.3  & 0.175 \\
+G &  0.2  & 0.1  & 0.7  & 0.2  & 0.325 \\
+T & 0.1 &  0.3  & 0.1  & 0.4  & 0.175 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{A) Extend existing solution to W = 5}
+
+\begin{center}
+\begin{tabular}{ | c | c c c c c | c |}
+\hline
+& i=1 & i=2 & i=3 & i=4 & i=5 & Background \\
+\hline
+A & 0.100 & 0.500 & 0.100 & 0.100 & 0.400 & 0.300 \\
+C & 0.600 & 0.100 & 0.100 & 0.300 & 0.200 & 0.167 \\
+G & 0.200 & 0.100 & 0.700 & 0.200 & 0.300 & 0.333 \\
+T & 0.100 & 0.300 & 0.100 & 0.400 & 0.100 & 0.200 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{B) Compare Log Likelihood}
+
+
+
+   
     Give an appropriate positive constant \(c\) such that \(f(n) \leq c \cdot
     g(n)\) for all \(n > 1\).
 
