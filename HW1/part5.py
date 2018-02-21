@@ -1,8 +1,10 @@
 import numpy as np
+import itertools
+
+ch_to_n = {el:i for i,el in enumerate('ACGT')} 
 
 def get_pwm(seqs,z1,W): 
     Nc = {el:0 for el in 'ACGT'} 
-    ch_to_n = {el:i for i,el in enumerate('ACGT')} 
     for seq in seqs: 
         for ch in seq: 
             Nc[ch] += 1 
@@ -18,7 +20,19 @@ def get_pwm(seqs,z1,W):
     pwm = pwm/pwm.sum(axis=0)
     return (pwm)
 
-def get_log_likelihood(seqs,z1,W,pwm):
+def get_log_prob(seqs,pwm,z1,W):
+    log_pwm = np.log10(pwm)
+    prob = 0
+    L = len(seqs[0])
+    for i,seq in enumerate(seqs):
+        motif_pos = range(W)
+        non_motif_range = itertools.chain(range(z1[i]),range(z1[i]+W,L))
+        for j in non_motif_range:
+            prob += log_pwm[ch_to_n[seq[j]],0]
+        for j in motif_pos:
+            prob += log_pwm[ch_to_n[seq[j+z1[i]]],j+1]
+    return prob
+
 
 
 seqs = [
@@ -42,6 +56,12 @@ for i, ch in enumerate('ACGT'):
             [ch] 
             + ["{:.3f}".format(el) for el in pwm[i,1:]] 
             + ["{:.3f}".format(pwm[i,0])]))
+p4 =  get_log_prob(seqs, get_pwm(seqs,z1,4), z1, 4)
+p5 =  get_log_prob(seqs, get_pwm(seqs,z1,5), z1, 5)
+print("The log likelihood for W=4 solution is {:.2f}".format(p4))
+print("The log likelihood for W=5 solution is {:.2f}".format(p5))
+print("The difference is {:.3f}".format(p5-p4))
+
 
 
 
