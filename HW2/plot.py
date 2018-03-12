@@ -33,6 +33,19 @@ def main(args):
     FPR = []
     TPR = []
 
+    n = len(predicted_pairs)
+    dy = 1/len(true_pairs)
+    dx = 1/(n-len(true_pairs))
+    (x,y) = (0,0)
+    for pred in predicted_pairs:
+        if pred in true_pairs:
+            y += dy
+        else:
+            x += dx
+        FPR.append(x)
+        TPR.append(y)
+
+
     # TODO: Calculate the coordinates of points on ROC
     # store the x coordinates in FPR
     # store the y coordinates in TPR

@@ -9,20 +9,14 @@ import itertools as it
 PSEUDO_COUNT = .1
 
 def get_dens_bins(x,n):
-    '''For the equal density binning strategy, you can use np.percentile to determine the limits of each bin. np.digitize will then assign each value to a bin. Set right=True so that a bin includes its right limit. If you do exactly this then your output will match ours. If you try something different that also attempts to balance the number of values across the bins, your result may be slightly off, but I think that is acceptable.'''
+    '''For the equal density binning strategy, you can use np.percentile to 
+    determine the limits of each bin. np.digitize will then assign each value 
+    to a bin. Set right=True so that a bin includes its right limit. If you 
+    do exactly this then your output will match ours. If you try something 
+    different that also attempts to balance the number of values across the 
+    bins, your result may be slightly off, but I think that is acceptable.'''
 
-    k = np.argsort(x)
-    eps = 1e-5
-    bins = [x[k[0]]-eps]
-    n_in_bin = len(x)/n
-    i = n_in_bin
-    while i < len(x)-1-eps:
-        bins.append(.5*(x[k[int(i)]] + x[k[int(i)+1]]))
-        i += n_in_bin
-    bins.append(x[k[-1]] + eps)
-    return bins
-
-
+    return ( [-9999999] + [np.percentile(x,i*100/n) for i in range(1,n+1)])
 
 def main(args):
     # Parse input arguments 
@@ -35,7 +29,46 @@ def main(args):
     # not using time, so first column ommitted. 
     expr = np.loadtxt(args.dataset, skiprows=1)[:,1:]
     n_genes = np.shape(expr)[1]
+
     MI = np.zeros((n_genes, n_genes))
+    outstrings = []
+    if bin_str == 'kernel':
+        for gene_a, gene_b in it.combinations(range(n_genes),2):
+            a =  expr[:,gene_a]
+            b = expr[:,gene_b]
+            # make a mesh grid
+            A,B = np.mgrid[-.1:1.1:100j, -.1:1.1:100j]
+            # flatten to 2 x 10k
+            positions = np.vstack([A.ravel(), B.ravel()])
+            values = np.vstack([a, b])
+            kernel = stats.gaussian_kde(values)
+            K = np.reshape(kernel(positions).T, A.shape)
+            K += .001;
+            # Adapted from https://gist.github.com/GaelVaroquaux/ead9898bd3c973c40429
+            K *= .012 * .012
+            s1 = np.sum(K, axis=0).reshape((-1, K.shape[0]))
+            s2 = np.sum(K, axis=1).reshape((K.shape[1], -1))
+            MI = (np.sum(K * np.log2(K)) 
+                    - np.sum(s1 * np.log2(s1))
+                    - np.sum(s2 * np.log2(s2)))
+            # Still not sure whats wrong with my two algorithms below
+            '''
+            g, p, dof, expected = stats.chi2_contingency(
+                K, lambda_="log-likelihood")
+            #print(0.5 * g / K.sum() / np.log(2))
+
+            K /= K.sum()
+            MI = 0
+            for i in range(100):
+                for j in range(100):
+                    MI += K[i,j]*np.log2(K[i,j]/K[i,:].sum()/K[:,j].sum())
+            '''
+            outstring = '({},{})\t{:.3f}\n'.format(gene_a+1,gene_b+1, MI)
+            outstrings.append(outstring)
+        with open(output_file_path,'w') as f:
+            f.writelines(sorted(outstrings,
+                key = lambda s: -float(s.split('\t')[1])))
+        return
     for gene_a, gene_b in it.combinations(range(n_genes),2):
         if bin_str=='uniform': 
             discrete_expr = np.histogram2d(
@@ -52,7 +85,13 @@ def main(args):
         g, p, dof, expected = stats.chi2_contingency(
                 discrete_expr, lambda_="log-likelihood")
         MI[gene_a,gene_b] = 0.5 * g / discrete_expr.sum() / np.log(2)
-        print('({},{})\t{:.3f}'.format(gene_a+1,gene_b+1, MI[gene_a,gene_b]))
+        outstring = '({},{})\t{:.3f}\n'.format(gene_a+1,gene_b+1, MI[gene_a,gene_b])
+        outstrings.append(outstring)
+
+    with open(output_file_path,'w') as f:
+        f.writelines(sorted(outstrings,
+            key = lambda s: -float(s.split('\t')[1])))
+
 
 
 

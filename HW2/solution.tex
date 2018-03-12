@@ -87,12 +87,12 @@
 %   - Author
 %
 
-\newcommand{\hmwkTitle}{Homework\ \#2}
+\newcommand{\hmwkTitle}{Homework\ \#2 }
 \newcommand{\hmwkDueDate}{March 8, 2018}
 \newcommand{\hmwkClass}{BMI 776}
 \newcommand{\hmwkClassTime}{}
 \newcommand{\hmwkClassInstructor}{}
-\newcommand{\hmwkAuthorName}{\textbf{John Steill}}
+\newcommand{\hmwkAuthorName}{\textbf{John Steill -- 2 Late Days Used}}
 %\and \textbf{Davis Josh}}
 
 %
@@ -144,7 +144,7 @@
 \pagebreak
 
 \begin{homeworkProblem}
-\textbf{Mutual Information From Discrete Binning}
+\textbf{A. Mutual Information From Discrete Binning}
 
 Two of functions in the class-approved libraries make short work of this problem:
 
@@ -159,9 +159,124 @@ Two of functions in the class-approved libraries make short work of this problem
 	\end{itemize}
 \end{itemize}
 
-\textbf{Equal Density Binning}
+\textbf{B. Equal Density Binning}
+
+The coded solution is in CalcMI.py.
+
+\textbf{C. Kernel Density Estimation}
+
+The coded solution is in CalcMI.py.
+
+\textbf{D. ROC plotting}
+
+The coded solution in included in plot.py
+
+\textbf{Prediction Evaluation}
+
+We are to evaluate several cases, and describe which gives the greatest AUROC.
+For the ones given, the 7-bin uniform density does best with an AUROC of .662 . 
+
+\begin{figure}[h!]
+\caption{7 bins, Uniform Size}
+ \includegraphics[width=3in]{uni_7b.png} 
+ \centering
+ \end{figure}
+
+\begin{figure}[h!]
+\caption{9 bins, Equal Density}
+ \includegraphics[width=3in]{den_9b.png} 
+ \centering
+ \end{figure}
+
+\begin{figure}[h!]
+\caption{Kernel Estimatiom}
+ \includegraphics[width=3in]{kern.png} 
+ \centering
+ \end{figure}
 
 \end{homeworkProblem}
+\newpage
+\begin{homeworkProblem}
+\textbf{2A  Probabilities in the Markov random field}
+\begin{itemize}
+	\item{How many possible configurations are there in this network?  $2^{15} = 32768$}
+	\item{What are the most probable and the least probable configurations?}
+	\begin{itemize}
+		\item{The most probable configurations are when all nodes are in the same state: either on or off.}
+		\item{The least probable state is when nodes alternate between rows, so every pair is $(1,-1)$.}
+	\end{itemize} 
+	\item{Is it true that $P(R=1|S=1) = P(S=1|R=1)$?}
+	\begin{itemize}
+		\item{No it is not. For the $P(S=1|R=1)$ case, we note that the calculation is unaffected by the state of the left branch of the tree, which is "shielded" by the given $R$ state.}
+		\item{Because $S$ is a leaf node, in the $ P(R=1|S=1)$ case, the entire tree is still influencing $R$.}
+		\item{Therefore, $P(S=1|R=1) > P(R=1|S=1) $.}
+	\end{itemize} 
+\end{itemize}
+
+\textbf{2B: Gibbs sampling in the Markov random field}
+Here we program a gibbs sample, and estimate the probability of $P(R=1|S=1)$.
+Three iterations give values of .522, .528, and .547.  
+
+(To verify my answer to question 3 in part A, I estimated $P(S=1|R=1)$ to be about .55.)
+
+\end{homeworkProblem}
+
+\newpage
+\begin{homeworkProblem}
+\textbf{3A Estimating $\lambda$}
+Visually estimating $\lambda$ is tricky because choosing the flattest part motivates 
+$p > .6$: $$\frac{4 * 1750}{.4 * 20000} \approx  .85 $$ 
+However, I don't like this solution because the ideal curve is monotonically decreasing, if lambda was so high, there shouldn;t be so few 
+p-values in the $(.2,.6)$ range. Therefore I would choose the bumpier ride of a threshold of $p=.2$.
+$$\frac{8 * 1550}{.8 * 20000} \approx  .78$$ In any case, as we are only asked to approximate to the nearest tenth, I'm rounding down to 
+$$\lambda = .8 $$
+
+
+\textbf{3B Estimating $\hat{\pi}_0(\lambda)$}
+\begin{center}
+ \begin{tabular}{|| c c c ||} 
+
+ \hline
+ $\lambda$ & $p_i > \lambda $ & $ \hat{\pi}_0(\lambda)$ \\ [0.5ex] 
+  \hline 
+  0.0 & 20000 & 1.00 \\
+0.1 & 15427 & 0.86 \\
+0.2 & 12893 & 0.81 \\
+0.3 & 11382 & 0.81 \\
+0.4 & 9834 & 0.82 \\
+0.5 & 8466 & 0.85 \\
+0.6 & 7030 & 0.88 \\
+0.7 & 5259 & 0.88 \\
+0.8 & 3484 & 0.87 \\
+0.9 & 1714 & 0.86 \\[1ex] 
+\hline
+\end{tabular} 
+\\[1.5ex]
+
+\end{center}
+
+\textbf{3C: Calculating q-values}
+\begin{center}
+ \begin{tabular}{|| c c c ||} 
+\hline
+Rank & p-value & q-value \\ [0.5ex] 
+\hline
+0 & 0.000003 & 0.048 \\
+1 & 0.000007 & 0.056 \\
+2 & 0.000013 & 0.069 \\
+3 & 0.000024 & 0.088 \\
+4 & 0.000028 & 0.088 \\
+5 & 0.000033 & 0.088 \\
+6 & 0.000046 & 0.105 \\
+7 & 0.000055 & 0.110 \\
+8 & 0.000096 & 0.158 \\
+9 & 0.000099 & 0.158 \\
+\hline
+\end{tabular} 
+\\[1.5ex]
+
+\end{center}
+\end{homeworkProblem} 
 %  \begin{algorithm}[]
 %        \begin{algorithmic}[1]
 %            \Function{OOPS\_exhausive}{$input\_seqs, W, \pi_{init}$}
