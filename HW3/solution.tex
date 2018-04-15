@@ -154,16 +154,12 @@
 	\end{itemize}}
 	\item{\textbf{2-layer training}
 	\begin{itemize}
-		\item{}
-		\item{}
+		\item{At the first epoch, the training auPRC was .529, and the validation auPRC was .500.}
+		\item{At the final epoch, the training auPRC was .928 and the validation auPRC was .716.}
 	\end{itemize}}
 \end{itemize}
 
 
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textbf{1B: Using and interpreting trained convolutional networks}
 \begin{itemize}
 	\item{\textbf{Input and output dimensions of the first Convolution2D layer} The input dimensions, 4 and 500, correspond to the 4 character, 500 base length input sequences.  The output dimensions, 1 and 486, correspond to the 15-base convolution outputs. Position domains begin with (1,15) and continue to (486,500). }
@@ -171,7 +167,7 @@
 	\item{\textbf{Test Confusion Matrix} \vspace{3 mm} \\ 
 		\begin{tabular}{|| l l ||} 
 			\hline
-			\multicolumn{2}{|c|}{2-Layer Test Results} \\I:I
+			\multicolumn{2}{|c|}{2-Layer Test Results} \\
 			\hline
 			positive\_test\_0	& P(bound)=0.897705674171 \\
 			positive\_test\_1	& P(bound)=0.925364196301 \\
@@ -180,7 +176,7 @@
 			positive\_test\_4	& P(bound)=0.490884274244 \\
 			\hline
 			negative\_test\_0 & P(bound)=0.708925485611 \\
-			negative\_test\_1 & P(bound)=0.161382764578 \\the:W
+			negative\_test\_1 & P(bound)=0.161382764578 \\
 			negative\_test\_2 & P(bound)=0.941750407219 \\
 			negative\_test\_3 & P(bound)=0.781042456627 \\
 			negative\_test\_4 & P(bound)=0.526986956596 \\
@@ -196,12 +192,18 @@
 			 \hline
 		\end{tabular}  }
 	\item{\textbf{Filters vs Final Motifs} The filters do not obviously resemble the final motifs. This is not surprising. Filters are different objects, for example they ave both positive and negative values. The are optimized to be used in conjunction with each other in the next neural net. The can detect interaction effects between nearby position, where PWMs assume strict information independence.}
-	\item{\textbf{DeepLIFT scores}}
+	\item{\textbf{DeepLIFT scores} The DeepLIFT scores vividly highlight occurrences of motif2.png, NFKB\_known1. The motif from motif1.png, IRF\_known1 is not found. The scores are not exact, but they are much closer to the motif than to any of the trained filters.}
 \end{itemize}
 
-
+\textbf{1C:  Implementing a forward pass}
 \end{homeworkProblem}
-%\newpage
+\newpage
+\begin{homeworkProblem}
+\textbf{2A:  Implementing a forward pass}
+\end{homeworkProblem}
+
+
+
 %\begin{homeworkProblem}
 %\textbf{2A  Probabilities in the Markov random field}
 %\begin{itemize}
