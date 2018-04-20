@@ -7,6 +7,7 @@
 %   is the style
 
 \usepackage[pdftex]{graphicx}
+\usepackage{amsmath, amsthm, amssymb, amsfonts}
 \usepackage{url}
 
 % These are additional packages for "pdflatex", graphics, and to include
@@ -23,39 +24,38 @@
 
 % Everything after this becomes content
 % Replace the text between curly brackets with your own
+\begin{center}
+{ \Large miRNA Expression} \\ {\large Normalization Algorithms and Amplification Biases \\  Progress Report \\John Steill}
+\end{center}
 
-\title{miRNA Expression:\\ Normalization Algorithms and Amplification Biases}
-\author{John Steill}
-\date{\today}
+%\title{miRNA Expression:\\ \large Normalization Algorithms and Amplification Biases \\ \normalsize Progress Report}
+%\author{John Steill}
+%\date{\today}
 
 % You can leave out "date" and it will be added automatically for today
 % You can change the "\today" date to any text you like
 
-\maketitle
+%\maketitle
 
 % This command causes the title to be created in the document
 
-\section{Introduction}
+\section{Proposal updates}
+There are no significant scope updates. I am committed to recommending a normalization algorithm optimized for miRNA Differential Expression Analysis. I intend to quantify the effects of amplification biases. Explanatory efforts with CNNs remain a stretch goal. 
+\section{Progress}
+\begin{itemize}
+	\item{I have obtained data from sequencing the same biological sample with 18 technical replicates, 2 replicates each at 3 different starting quantities (3ng, 6.25ng, and 25ng) AND 3 different PCR settings (10, 20, and 20 cycles.)}
+	\item {I have decided upon a 100 ng sample to be used as a gold standard.}
+	\item {I have programmed a custom miRNA alignment algorithm, in which families of miRNA transcripts which share the first 15 bases are treated as a single library. I have obtained expected counts.}
+	\item {I have programmed two normalization routines, CPM and Upper Percentile, and have demonstrated that they produce markedly different profiles. (Trimmed Mean of M-Values remains to be completed.)}
+	\item {I have observed strong evidence of systemic bias, in which a library's relative expression rises nearly monotonically with decreasing initial quantity and increasing pcr cycles.}
+\end{itemize}
+\section{Challenges}
 
-% An article style is separated into sections and subsections with 
-%   markup such as this.  Use \section*{Principles} for unnumbered sections.
-Small noncoding RNAs known as microRNA (miRNA) play a crucial role in gene expression regulation. Each miRNA can target many genes, and many genes can be effected by a variety of miRNA\cite{Dong}.  However, there is still no consensus on how expression data should be pre-processed before downstream analysis.\cite{tam} I will survey and evaluate existing normalization methods and attempt to characterize and correct for amplification biases. If I am successful, we will be better able to contrast the regulatory effects of miRNA profiles from different biological conditions. 
+\begin{itemize}
+	\item{It will not be easy to decide upon a metric to evaluate normalization algorithms. It will likely turn out that the optimal choice for analyzing top expressors and low expressors will be different. I will mitigate this by both continuing my literature review and understanding choices other authors have made. Also, I will consult with lab mates to define as tightly as posssible their  experimental aim and optimize for that.}
+	\item{The examples I've seen for training neural nets has thus far been classification problems. The function here I am trying to learn is $bias = f(\text{library},\text{amt}, N_{cycles})$, which is real valued. The signal maybe relatively weak, and designing the layers to capture hairpin-inducing sequences will be complicated. I will mitigate this risk by treating this part of the project as  exploratory, and possibly lower my expectations of being able to reliably "de-bias" normalized expression values values.}
+\end{itemize}
 
-\section{Resources}
-I have access to raw fast files for hundreds samples from dozens of sequencing submissions. A data set I am especially interested in is the same sample in nine different combinations of starting amount and amplification cycles.
-In addition, I am able to gather GEO data if needed. I have access to both human and mouse miRNA libraries. Finally, I have access to a suite of multi-core clusters. 
-
-\section{Methods}
-I intend to investigate at least simple cpm normalization, upper percentile normalization\cite{bullard}, and Trimmed Mean of M-values \cite{Robinson} normalization. I hope to
-model amplification bias as a function of miRNA library, starting qty, and number of amplification cycles using Caffe CNNs\cite{Jia}. For
-DE, I will use EBSeq.\cite{Leng}
-
-\section{Anticipated Results}
-
-I expect non-trivial normalization algorithms to be sample-set dependent. Thus the input will be a table of raw counts, and the
-output will be a table of normalized values. I will evaluate the results with DE analysis: I hope to minimize false positives by examining samples which are biological replicates but not technical replicates. 
-
-An ideal result would be a satisfactory normalization method as well as an explanatory CNN. For example, I hypothesize that hairpin structures in the miRNA, caused be nearby reverse palindromic sequences, might inhibit amplification, so these species will be underrepresented with low starting quantities and more amplification cycles. It would be ideal to find a convolutional layer that detected this condition. In addition, I will be looking for more integral patterns, such as CG vs AT content.
 
 %\cite{gonzalez2012}.
 
@@ -133,22 +133,22 @@ An ideal result would be a satisfactory normalization method as well as an expla
 %date it could see light yet.  
 
 
- 
-\begin{thebibliography}{99}
-
-\bibitem{tam} Tam, Shirley, Ming-Sound Tsao, and John D. McPherson. "Optimization of miRNA-seq data preprocessing." Briefings in bioinformatics 16.6 (2015): 950-963.
-
-\bibitem{bullard}Bullard, James H., et al. "Evaluation of statistical methods for normalization and differential expression in mRNA-Seq experiments." BMC bioinformatics 11.1 (2010): 94.
-
-\bibitem{Robinson}Robinson, Mark D., and Alicia Oshlack. "A scaling normalization method for differential expression analysis of RNA-seq data." Genome biology 11.3 (2010): R25.
-
-\bibitem{Leng} Leng, Ning, et al. "EBSeq: an empirical Bayes hierarchical model for inference in RNA-seq experiments." Bioinformatics 29.8 (2013): 1035-1043.
-
-\bibitem{Jia} Jia, Yangqing, et al. "Caffe: Convolutional architecture for fast feature embedding." Proceedings of the 22nd ACM international conference on Multimedia. ACM, 2014.
-
-\bibitem{Dong}Dong, Haifeng, et al. "MicroRNA: function, detection, and bioanalysis." Chemical reviews 113.8 (2013): 6207-6233.
-
-\end{thebibliography}
+% 
+%\begin{thebibliography}{99}
+%
+%\bibitem{tam} Tam, Shirley, Ming-Sound Tsao, and John D. McPherson. "Optimization of miRNA-seq data preprocessing." Briefings in bioinformatics 16.6 (2015): 950-963.
+%
+%\bibitem{bullard}Bullard, James H., et al. "Evaluation of statistical methods for normalization and differential expression in mRNA-Seq experiments." BMC bioinformatics 11.1 (2010): 94.
+%
+%\bibitem{Robinson}Robinson, Mark D., and Alicia Oshlack. "A scaling normalization method for differential expression analysis of RNA-seq data." Genome biology 11.3 (2010): R25.
+%
+%\bibitem{Leng} Leng, Ning, et al. "EBSeq: an empirical Bayes hierarchical model for inference in RNA-seq experiments." Bioinformatics 29.8 (2013): 1035-1043.
+%
+%\bibitem{Jia} Jia, Yangqing, et al. "Caffe: Convolutional architecture for fast feature embedding." Proceedings of the 22nd ACM international conference on Multimedia. ACM, 2014.
+%
+%\bibitem{Dong}Dong, Haifeng, et al. "MicroRNA: function, detection, and bioanalysis." Chemical reviews 113.8 (2013): 6207-6233.
+%
+%\end{thebibliography}
 
 
 
