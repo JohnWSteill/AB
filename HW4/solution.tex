@@ -1,0 +1,271 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usetikzlibrary{automata,positioning}
+\usepackage{listings}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass\ : \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework\ \#3 (2 Days Late, 4/5 total) }
+\newcommand{\hmwkDueDate}{April 12, 2018}
+\newcommand{\hmwkClass}{BMI 776}
+\newcommand{\hmwkClassTime}{}
+\newcommand{\hmwkClassInstructor}{}
+\newcommand{\hmwkAuthorName}{\textbf{John Steill}}
+%\and \textbf{Davis Josh}}
+
+%
+% Title Page
+%
+
+\title{
+    \vspace{2in}
+    \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+    \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 3:10pm}\\
+    \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+    \vspace{3in}
+}
+
+\author{\hmwkAuthorName}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\ }
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Alias for the Solution section header
+\newcommand{\solution}{\textbf{\large Solution}}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\E}{\mathrm{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+
+\begin{document}
+
+%\maketitle
+
+\pagebreak
+
+\begin{homeworkProblem}
+\textbf{1A Dragonn: Training convolutional networks}
+
+\begin{itemize}
+	\item{\textbf{1-layer training}
+	\begin{itemize}
+		\item{At the first epoch, the training auPRC was .511, and the validation auPRC was .526.}
+		\item{At the final epoch, the training auPRC was .577 and the validation auPRC was .516.}
+	\end{itemize}}
+	\item{\textbf{2-layer training}
+	\begin{itemize}
+		\item{At the first epoch, the training auPRC was .529, and the validation auPRC was .500.}
+		\item{At the final epoch, the training auPRC was .928 and the validation auPRC was .716.}
+	\end{itemize}}
+\end{itemize}
+
+
+\textbf{1B: Using and interpreting trained convolutional networks}
+\begin{itemize}
+	\item{\textbf{Input and output dimensions of the first Convolution2D layer} The input dimensions, 4 and 500, correspond to the 4 character, 500 base length input sequences.  The output dimensions, 15 and 486, correspond to the 15 Channels of the convolution outputs. Position domains begin with (1,15) and continue to (486,500). }
+	\item{\textbf{Input and output dimensions of the Dense layer}. The input layer dimension, 195, arises from the number of nodes in all the previous "flatten" layer, 15 by 13. The output dimension of 1 corresponds to the NN's estimate of the probability of a positive condition given the input.}
+	\item{\textbf{Test Confusion Matrix} \vspace{3 mm} \\ 
+		\begin{tabular}{|| l l ||} 
+			\hline
+			\multicolumn{2}{|c|}{2-Layer Test Results} \\
+			\hline
+			positive\_test\_0	& P(bound)=0.897705674171 \\
+			positive\_test\_1	& P(bound)=0.925364196301 \\
+			positive\_test\_2	& P(bound)=0.806158542633 \\
+			positive\_test\_3	& P(bound)=0.909259021282 \\
+			positive\_test\_4	& P(bound)=0.490884274244 \\
+			\hline
+			negative\_test\_0 & P(bound)=0.708925485611 \\
+			negative\_test\_1 & P(bound)=0.161382764578 \\
+			negative\_test\_2 & P(bound)=0.941750407219 \\
+			negative\_test\_3 & P(bound)=0.781042456627 \\
+			negative\_test\_4 & P(bound)=0.526986956596 \\
+			\hline
+		\end{tabular}
+ 		\hspace{3 mm}
+ 		\begin{tabular}{|| l l ||} 
+ 			\hline
+ 			True Positives & 4 \\
+ 			False Positives  & 4 \\
+			 True Negatives & 1 \\
+ 			False Negatives & 1 \\
+			 \hline
+		\end{tabular}  }
+	\item{\textbf{Filters vs Final Motifs} The filters do not obviously resemble the final motifs. This is not surprising. Filters are different objects, for example they ave both positive and negative values. The are optimized to be used in conjunction with each other in the next neural net layer. Finally, they can describe interactions between nearby positions, while PWMs assume strict independence regarding positions.}
+	\item{\textbf{DeepLIFT scores} The DeepLIFT scores vividly highlight occurrences of motif2.png, NFKB\_known1. The motif from motif1.png, IRF\_known1 is not found, or at least not highlighted by the algorithm. The sequence diagrams are not exact, but they are much closer to the motif than to any of the trained filters.}
+\end{itemize}
+
+\textbf{1C:  Implementing a forward pass} - Programming assignment: forward\_pass.py
+\end{homeworkProblem}
+
+\newpage
+
+\begin{homeworkProblem}
+\textbf{2A:   Estimating relative abundance}
+\begin{equation*} 
+\begin{split}
+\hat{f}_1^{unique} & = \frac{\frac{620}{40}}{ \frac{620}{40} + \frac{405}{270} + \frac{5500}{1000} + \frac{40}{120} + \frac{180}{100} } =  0.629 \\
+\hat{f}_2^{unique} & = 0.0609 \\
+\hat{f}_3^{unique} & = 0.223 \\
+\hat{f}_4^{unique} & = 0.0135\\
+\hat{f}_X^{unique} & = 0.0731
+\end{split}
+\end{equation*}
+
+
+\begin{eqnarray*}  
+c_1^{rescue} & = 620 + 390  \frac{0.629 }{0.629 +0.223} &= 908 \\
+c_2^{rescue} & = 405 + 4100 \frac{0.0609 }{0.0609 +0.0731} & = 3760 \\
+c_3^{rescue} & = 5500 + 390 \frac{0.223 }{0.629 +0.223} & = 5600\\
+c_4^{rescue} & = 40 + 4100 \frac{0.0731}{0.0609 +0.0731} &= 785\\
+c_X^{rescue} & & = 180  
+\end{eqnarray*}
+
+\begin{equation*} 
+\begin{split}
+\hat{f}_1^{rescue} & = \frac{\frac{908}{40}}{ \frac{908}{40} + \frac{3760}{270} + \frac{5600}{1000} + \frac{785}{120} + \frac{180}{100} } =  0.449 \\
+\hat{f}_2^{rescue} & = 0.275 \\
+\hat{f}_3^{rescue} & = 0.111 \\
+\hat{f}_4^{rescue} & = 0.129\\
+\hat{f}_X^{rescue} & = 0.0356
+\end{split}
+\end{equation*}
+
+\textbf{2B: Estimating absolute abundance}
+\begin{eqnarray*} 
+N_X & & = 1000 \\
+N_1 &= 1000 \frac{ 0.449 }{.0356} & = 12600 \\
+N_2 & & = 7740 \\
+N_3 & & = 3110 \\
+N_4 & & = 3640 
+\end{eqnarray*}
+
+
+\end{homeworkProblem}
+\newpage
+
+\begin{homeworkProblem}
+\textbf{Gaussian processes for time series data}\vspace{5 mm}
+
+I propose first creating, for each gene, two GPs, one for the normal transient and one for the heat shock. I would do this with the  \href{http://scikit-learn.org/stable/auto_examples/gaussian_process/plot_gpr_noisy_targets.html}{\color{blue}GaussianProcessRegressor} function in the sklearn package.  After calling the fit and predict functions, y\_pred and sigma vectors are returned for a linspace of interest. 
+\vspace{5 mm}
+
+\textbf{Bayesian Equality Test}\vspace{5 mm}
+
+ I am following the approach in \href{https://pdfs.semanticscholar.org/4f55/c9868e8955b6c54239ea875034a582e9641b.pdf}{\color{blue}Benavoli, Alessio, and Francesca Mangili. "Gaussian Processes for Bayesian hypothesis tests on regression functions." Artificial Intelligence and Statistics. 2015.}\vspace{5 mm}
+
+Our next task is to map these two GPs to a p-value for the null hypothesis: the gene is not differentially expressed in the two transients.
+They first note that the difference between two GPs is itself a GP. If the resulting is GP is "near" the x-axis, the probability of the data being sampled from the null hypothesis is relatively high. To explicitly perform this mapping, we must scale the "credible region" by choosing the smallest number of SDs such that the zero vector is completely contained. We then map this Z score to a p-value with a t-test conversion. 
+
+\vspace{5 mm}
+
+\textbf{Multiple Hypothesis Correction}\vspace{5 mm}
+
+Finally, we must account for the number of genes tested. We should choose an acceptable FDR, and decide after examining the distribution on an appropriate correction method. Then choosing an appropriate q-value, deliver a list of possible DEGs for further inspection.
+
+
+\end{homeworkProblem}
+
+
+\end{document}
