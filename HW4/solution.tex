@@ -88,13 +88,13 @@
 %   - Author
 %
 
-\newcommand{\hmwkTitle}{Homework\ \#3 (2 Days Late, 4/5 total) }
-\newcommand{\hmwkDueDate}{April 12, 2018}
+\newcommand{\hmwkTitle}{Homework\ \#4 (1 Day  Late, 5/5 total) }
+\newcommand{\hmwkDueDate}{May 4, 2018}
 \newcommand{\hmwkClass}{BMI 776}
 \newcommand{\hmwkClassTime}{}
 \newcommand{\hmwkClassInstructor}{}
 \newcommand{\hmwkAuthorName}{\textbf{John Steill}}
-%\and \textbf{Davis Josh}}
+
 
 %
 % Title Page
@@ -145,23 +145,32 @@
 \pagebreak
 
 \begin{homeworkProblem}
-\textbf{1A Dragonn: Training convolutional networks}
+\textbf{1A: Generating simplified theoretical spectra: spectra\_generator.py}
 
-\begin{itemize}
-	\item{\textbf{1-layer training}
-	\begin{itemize}
-		\item{At the first epoch, the training auPRC was .511, and the validation auPRC was .526.}
-		\item{At the final epoch, the training auPRC was .577 and the validation auPRC was .516.}
-	\end{itemize}}
-	\item{\textbf{2-layer training}
-	\begin{itemize}
-		\item{At the first epoch, the training auPRC was .529, and the validation auPRC was .500.}
-		\item{At the final epoch, the training auPRC was .928 and the validation auPRC was .716.}
-	\end{itemize}}
-\end{itemize}
+ \vspace{3 mm}
+ 
+\textbf{1B: Computing cross-correlation scores: xcorr.py}
+\end{homeworkProblem}
 
+\begin{homeworkProblem}
+\textbf{2A: Source-target paths in networks: Complete the implementation of find\_paths.py}
+\vspace{3 mm}
+ 
+\textbf{2B: Test your implementation on a new network}
+\vspace{3 mm}
+ 
+\textbf{2C: Compare min cost flow and shortest paths}
+\vspace{3 mm}
+\textbf{2D: Special cases of the algorithms}
+% https://www.bu.edu/math/files/2013/08/tikzpgfmanual.pdf
+\end{homeworkProblem}
 
-\textbf{1B: Using and interpreting trained convolutional networks}
+\begin{homeworkProblem}
+\textbf{3A: Interpolated Markov models: $\chi^2$ test}
+\vspace{3 mm}
+\textbf{3B: Calclating $\lambda$ test}
+\vspace{3 mm}
+\textbf{3C: Interpolated Markov model probability}
 \begin{itemize}
 	\item{\textbf{Input and output dimensions of the first Convolution2D layer} The input dimensions, 4 and 500, correspond to the 4 character, 500 base length input sequences.  The output dimensions, 15 and 486, correspond to the 15 Channels of the convolution outputs. Position domains begin with (1,15) and continue to (486,500). }
 	\item{\textbf{Input and output dimensions of the Dense layer}. The input layer dimension, 195, arises from the number of nodes in all the previous "flatten" layer, 15 by 13. The output dimension of 1 corresponds to the NN's estimate of the probability of a positive condition given the input.}

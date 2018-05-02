@@ -1,6 +1,7 @@
 ''' Written by Anthony Gitter '''
 
 import argparse
+import pdb
 from itertools import islice
 import networkx as nx
 
@@ -27,7 +28,8 @@ def construct_digraph(edges_file):
             node1 = tokens[0]
             node2 = tokens[1]
             w = float(tokens[2])
-            # TODO: Add the pair of directed edges with a weight and capacity
+            digraph.add_edge(node1,node2,weight=w, capacity=1)
+            digraph.add_edge(node2,node1,weight=w, capacity=1)
 
     return digraph
 
@@ -47,10 +49,10 @@ def add_sources_targets(digraph, sources, targets):
     '''
     default_weight = 0
     default_capacity = float('inf')
-    
-    # TODO: Add the source edges and target edges with the default weight
-    # and capacity
-    
+    for source in sources:
+        digraph.add_weighted_edges_from([('source',source,0)])
+    for target in targets:
+        digraph.add_weighted_edges_from([(target,'target',0)])
 
 def remove_zero_flow(flow_dict):
     ''' Removes edges with flow of 0 from the flow dictionary returned by
@@ -90,12 +92,12 @@ def min_cost_flow(digraph, flow, output):
     '''
     assert 'source' in digraph
     assert 'target' in digraph
+    flow = float(flow)
+    digraph.add_node('source',demand=-flow)
+    digraph.add_node('target',demand=flow)
+    flow_dict = nx.min_cost_flow(digraph)
+    cost = nx.cost_of_flow(digraph,flow_dict)
 
-    # TODO: set up and run the min cost flow algorithm, storing the results
-    # in a variable called flow_dict
-
-    # TODO: obtain the cost of the flow using networkx's cost_of_flow,
-    # storing the results in a variable called cost
 
     print('The transmitted flow is {:.3g} and the cost is {:.3g}'.format(flow, cost))
 
@@ -124,10 +126,14 @@ def k_shortest_paths(digraph, k, output):
     '''
     assert 'source' in digraph
     assert 'target' in digraph
+    paths = [el for el in 
+            nx.algorithms.simple_paths.shortest_simple_paths(
+                digraph, 'source', 'target', weight='weight')][:k]
 
     # TODO: obtain the k shortest weighted paths and store then in a variable
     # called paths.  Use the example code at
     # http://networkx.readthedocs.io/en/stable/reference/generated/networkx.algorithms.simple_paths.shortest_simple_paths.html
+    # https://networkx.github.io/documentation/stable/reference/algorithms/generated/networkx.algorithms.simple_paths.shortest_simple_paths.html
     # to obtain a list of the k shortest paths from the shortest_simple_paths
     # function    
     
@@ -158,7 +164,7 @@ def main(args):
     print('Parsed a graph with {} nodes and {} directed edges'.format(digraph.order(), digraph.size()))
 
     # Uncomment this line to print the graph data structure to stdout
-    # print_graph(digraph)
+    #print_graph(digraph)
 
     add_sources_targets(digraph, sources, targets)
     print('The graph has {} nodes and {} directed edges after adding the ' \
