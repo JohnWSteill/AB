@@ -1,0 +1,8 @@
+['source', '4', '5', '11', 'target'], cost=25
+['source', '4', '5', '10', 'target'], cost=55
+['source', '1', '2', '5', '11', 'target'], cost=75
+['source', '4', '5', '11', '9', '12', 'target'], cost=95
+['source', '13', '5', '11', 'target'], cost=105
+['source', '1', '2', '5', '10', 'target'], cost=105
+['source', '1', '2', '3', '7', '8', '9', '11', 'target'], cost=120
+['source', '4', '5', '2', '3', '7', '8', '9', '11', 'target'], cost=130
